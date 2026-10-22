@@ -1,20 +1,22 @@
-const express = require("express");
-const cors = require("cors");
+const http = require("http");
+const app = require("./app");
+const env = require("./config/env");
+const logger = require("./lib/logger");
+const { connectDB } = require("./lib/db");
+const { initSocket } = require("./sockets");
 
-const app = express();
+async function main() {
+  await connectDB();
 
-app.use(cors());
-app.use(express.json());
+  const server = http.createServer(app);
+  initSocket(server);
 
-app.get("/api/health", (req, res) => {
-  res.json({
-    success: true,
-    message: "Backend is running"
+  server.listen(env.port, () => {
+    logger.info(`Server running on port ${env.port}`);
   });
-});
+}
 
-const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+main().catch((err) => {
+  logger.error({ err }, "Failed to start server");
+  process.exit(1);
 });
