@@ -109,4 +109,26 @@ router.get(
   })
 );
 
+// GET /api/enrollments/upcoming-sessions — student: live lessons from enrolled courses
+router.get(
+  "/upcoming-sessions",
+  requireAuth,
+  requireRole("student"),
+  asyncHandler(async (req, res) => {
+    const enrollments = await Enrollment.find({ studentId: req.user.id, status: "enrolled" }).select("courseId");
+    const courseIds = enrollments.map((e) => e.courseId);
+
+    const sessions = await Lesson.find({
+      courseId: { $in: courseIds },
+      scheduledAt: { $gt: new Date() },
+      meetingLink: { $ne: null },
+    })
+      .sort({ scheduledAt: 1 })
+      .limit(20)
+      .populate("courseId", "title category thumbnail");
+
+    res.json({ success: true, message: "OK", data: sessions });
+  })
+);
+
 module.exports = router;
