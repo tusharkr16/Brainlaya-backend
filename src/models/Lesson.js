@@ -9,8 +9,9 @@ const lessonSchema = new Schema(
     attachments: [{ type: String }],
     order: { type: Number, default: 0 },
     // Optional live session info — scheduledAt/meetingLink are shown publicly
-    scheduledAt: { type: Date, default: null },
-    meetingLink: { type: String, default: null, maxlength: 500 },
+    scheduledAt:    { type: Date,   default: null },
+    meetingLink:    { type: String, default: null, maxlength: 500 },
+    recordingLink:  { type: String, default: null, maxlength: 1000 },
   },
   { timestamps: true }
 );

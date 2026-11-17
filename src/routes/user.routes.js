@@ -1,5 +1,6 @@
 const express = require("express");
 const { z } = require("zod");
+const bcrypt = require("bcryptjs");
 
 const User = require("../models/User");
 const Course = require("../models/Course");
@@ -39,6 +40,23 @@ router.patch(
     Object.assign(req.user.doc, req.body);
     await req.user.doc.save();
     res.json({ success: true, message: "Profile updated", data: req.user.doc.toSafeJSON() });
+  })
+);
+
+router.patch(
+  "/me/password",
+  requireAuth,
+  validate(z.object({
+    currentPassword: z.string().min(1),
+    newPassword:     z.string().min(8).max(128),
+  })),
+  asyncHandler(async (req, res) => {
+    const user = await User.findById(req.user.id).select("+passwordHash");
+    const ok = await bcrypt.compare(req.body.currentPassword, user.passwordHash);
+    if (!ok) throw new AppError(400, "Current password is incorrect");
+    user.passwordHash = await bcrypt.hash(req.body.newPassword, 12);
+    await user.save();
+    res.json({ success: true, message: "Password updated" });
   })
 );
 

@@ -17,6 +17,8 @@ const notificationRoutes = require("./routes/notification.routes");
 const adminRoutes = require("./routes/admin.routes");
 const uploadRoutes = require("./routes/upload.routes");
 const scheduleRoutes = require("./routes/schedule.routes");
+const noteRoutes = require("./routes/note.routes");
+const assignmentRoutes = require("./routes/assignment.routes");
 
 const app = express();
 
@@ -39,6 +41,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/schedule", scheduleRoutes);
+app.use("/api/notes", noteRoutes);
+app.use("/api/assignments", assignmentRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

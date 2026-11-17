@@ -17,13 +17,14 @@ const { notifyUser, emitToCourse } = require("../lib/realtime");
 const router = express.Router();
 
 const lessonSchema = z.object({
-  title: z.string().trim().min(1).max(200),
-  content: z.string().trim().optional().default(''),
-  videoLink: z.string().trim().url().max(1000).nullable().optional(),
-  attachments: z.array(z.string()).default([]),
-  order: z.number().int().min(0).default(0),
-  scheduledAt: z.string().datetime().nullable().optional(),
-  meetingLink: z.string().trim().url().max(500).nullable().optional(),
+  title:         z.string().trim().min(1).max(200),
+  content:       z.string().trim().optional().default(''),
+  videoLink:     z.string().trim().url().max(1000).nullable().optional(),
+  attachments:   z.array(z.string()).default([]),
+  order:         z.number().int().min(0).default(0),
+  scheduledAt:   z.string().datetime().nullable().optional(),
+  meetingLink:   z.string().trim().url().max(500).nullable().optional(),
+  recordingLink: z.string().trim().url().max(1000).nullable().optional(),
 });
 
 async function canSeeFullContent(course, user) {
